@@ -23,12 +23,6 @@ export default function AccountsPage() {
 
   const fetchAccounts = async () => {
     setFetching(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setFetching(false);
-      return;
-    }
-
     const { data, error } = await supabase
       .from('accounts')
       .select('*')
@@ -50,17 +44,10 @@ export default function AccountsPage() {
     }
 
     setLoading(true);
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-    if (userError || !user) {
-      alert('กรุณาเข้าสู่ระบบก่อนเพิ่มบัญชี');
-      setLoading(false);
-      return;
-    }
-
+    // บันทึกข้อมูลลง Supabase โดยตรงเนื่องจากปิด RLS แล้ว
     const { error } = await supabase.from('accounts').insert([
       {
-        user_id: user.id, // ส่ง user_id ให้ตรงกับ RLS Policy
         name: accountName.trim(),
         balance: Number(parseFloat(balance || '0').toFixed(2)),
       },
