@@ -1,11 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '@/utils/supabase';
 
 export default function CloudPocketsPage() {
   const [pockets, setPockets] = useState<any[]>([]);
@@ -15,7 +11,6 @@ export default function CloudPocketsPage() {
   const [color, setColor] = useState('#10B981');
   const [loading, setLoading] = useState(false);
 
-  // โหลดข้อมูล Pockets จาก Supabase
   const fetchPockets = async () => {
     const { data, error } = await supabase.from('pockets').select('*');
     if (error) {
@@ -29,7 +24,6 @@ export default function CloudPocketsPage() {
     fetchPockets();
   }, []);
 
-  // สร้างกระเป๋าใหม่
   const handleCreatePocket = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name) return;
@@ -55,7 +49,6 @@ export default function CloudPocketsPage() {
     setLoading(false);
   };
 
-  // ฟังก์ชันเติมเงิน / โยกเงินเข้ากระเป๋า (Deposit / Withdraw)
   const handleUpdateBalance = async (id: string, currentBalance: number) => {
     const amountStr = prompt('ระบุจำนวนเงินที่ต้องการเติมเข้า (ใส่เครื่องหมายลบ - หากต้องการถอนออก):', '100');
     if (!amountStr) return;
@@ -77,14 +70,12 @@ export default function CloudPocketsPage() {
     }
   };
 
-  // ลบกระเป๋า
   const handleDelete = async (id: string) => {
     if (!confirm('ต้องการลบกระเป๋านี้ใช่ไหม?')) return;
     const { error } = await supabase.from('pockets').delete().eq('id', id);
     if (!error) fetchPockets();
   };
 
-  // คำนวณยอดเงินรวมทุกกระเป๋า
   const totalPocketsBalance = pockets.reduce(
     (sum, p) => sum + Number(p.balance || p.amount || 0),
     0
@@ -94,7 +85,6 @@ export default function CloudPocketsPage() {
 
   return (
     <div className="p-6 text-white max-w-5xl mx-auto">
-      {/* Header */}
       <div className="flex justify-between items-center mb-8 bg-gray-900 p-6 rounded-2xl border border-gray-800">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -112,7 +102,6 @@ export default function CloudPocketsPage() {
         </div>
       </div>
 
-      {/* Form สร้างกระเป๋าใหม่ */}
       <form onSubmit={handleCreatePocket} className="bg-gray-900 p-6 rounded-2xl border border-gray-800 mb-8">
         <h2 className="text-lg font-semibold mb-4">สร้างกระเป๋าเงินย่อยใหม่</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -165,7 +154,6 @@ export default function CloudPocketsPage() {
         </div>
       </form>
 
-      {/* รายการกระเป๋า */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {pockets.length === 0 ? (
           <p className="text-gray-500 col-span-2 text-center py-8">ยังไม่มีกระเป๋าเงินย่อย เริ่มสร้างกระเป๋าแรกของคุณได้เลย</p>
