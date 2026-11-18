@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   ArrowLeftRight,
   Wallet,
+  Sparkles,
   PieChart,
   Target,
   Settings,
@@ -18,6 +19,7 @@ const navItems = [
   { name: 'Home', href: '/', icon: LayoutDashboard },
   { name: 'รายการ', href: '/transactions', icon: ArrowLeftRight },
   { name: 'บัญชี', href: '/accounts', icon: Wallet },
+  { name: 'Cloud Pockets', href: '/pockets', icon: Sparkles },
   { name: 'งบประมาณ', href: '/budgets', icon: PieChart },
   { name: 'เป้าหมาย', href: '/goals', icon: Target },
   { name: 'ตั้งค่า', href: '/settings', icon: Settings },
@@ -47,7 +49,7 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="w-full mb-6 bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/10"
+          className="w-full mb-6 bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/10 cursor-pointer"
         >
           <Plus className="w-5 h-5 stroke-[2.5]" />
           <span>เพิ่มรายการ</span>
@@ -104,11 +106,12 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
           <button
             onClick={() => setIsModalOpen(true)}
             aria-label="เพิ่มรายการ"
-            className="w-12 h-12 -mt-6 rounded-full bg-emerald-500 hover:bg-emerald-400 text-gray-950 flex items-center justify-center shadow-lg shadow-emerald-500/25 transition active:scale-95"
+            className="w-12 h-12 -mt-6 rounded-full bg-emerald-500 hover:bg-emerald-400 text-gray-950 flex items-center justify-center shadow-lg shadow-emerald-500/25 transition active:scale-95 cursor-pointer"
           >
             <Plus className="w-6 h-6 stroke-[2.5]" />
           </button>
 
+          {/* แสดง บัญชี และ Cloud Pockets ทางฝั่งขวาของปุ่มลอย */}
           {navItems.slice(2, 4).map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -121,7 +124,7 @@ export default function NavigationWrapper({ children }: { children: React.ReactN
                 }`}
               >
                 <Icon className="w-5 h-5" />
-                <span className="text-[11px]">{item.name}</span>
+                <span className="text-[11px]">{item.name === 'Cloud Pockets' ? 'Pockets' : item.name}</span>
               </Link>
             );
           })}
